@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Classement des Assos</title>
+    <style>
+       
+        body {
+            background-image: url("{{ url_for('static', filename='visu.png') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Conteneur pour les colonnes */
+        .column-container {
+            display: flex;
+            justify-content: space-between;
+         
+            align-items: center; /* Centrer verticalement le contenu du conteneur */
+            margin-top: 170px; /* Espacement en haut du tableau pour le déplacer vers le bas */
+           
+        }
+
+        /* Style de chaque colonne */
+        .column {
+            width: 50%; /* Largeur des colonnes, en laissant un petit espace entre elles */
+            align-items: center;
+        }
+
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            border: 1px solid #333;
+            opacity: 0.8; /* Rendre le tableau un peu transparent */
+            margin: 0 auto; /* Centre le tableau horizontalement */
+        }
+
+        /* Style des en-têtes de colonnes */
+        th {
+            font-size: 20px; /* Changer la taille de la police ici */
+            background-color: #333;
+            color: #fff;
+            font-family: 'Bebas Neue', sans-serif;
+            text-align: center;
+            padding: 12px;
+            align-items: center;
+        }
+
+        /* Style des cellules de données */
+        /* Style des cellules de données */
+        td {
+            font-size: 22px; /* Changer la taille de la police ici */
+            font-family: 'Bebas Neue', sans-serif;
+            text-align: center;
+            padding: 12px;
+        }
+        
+
+        /* Style pour les lignes paires */
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Style pour les lignes impaires */
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        /* Style pour les lignes au survol de la souris */
+        tr:hover {
+            background-color: #ddd;
+        }
+        
+        /* Style pour les lignes avec la classe "gold" */
+        tr.gold {
+            background-color: gold; /* Couleur pour la première place */
+        }
+
+        /* Style pour les lignes avec la classe "silver" */
+        tr.silver {
+            background-color: silver; /* Couleur pour la deuxième place */
+        }
+
+        /* Style pour les lignes avec la classe "bronze" */
+        tr.bronze {
+            background-color: #cd7f32; /* Couleur pour la troisième place (en bronze) */
+        }
+
+        
+    </style>
+</head>
+<body>
+   
+    <div class="column-container">
+        <div class="column">
+            <table id="data-table1">
+                <thead>
+                    <tr>
+                        <th>Asso</th>
+                        <th>Nombre de Shots</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les données seront affichées ici -->
+                </tbody>
+            </table>
+        </div>
+    
+        <div class="column">
+            <table id="data-table2">
+                <thead>
+                    <tr>
+                        <th>Asso</th>
+                        <th>Nombre de Shots</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les données seront affichées ici -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function refreshData() {
+            $.get('/get_data', function(data) {
+                // Mettez à jour les données dans les tableaux
+                $("#data-table1 tbody").empty();
+                $("#data-table2 tbody").empty();
+
+                data.forEach(function(item, index) {
+                // Check if the index is less than 11 for the first table
+                if (index < 10) {
+                    if (index === 0) {
+                        rowClass = "gold";
+                    } else if (index === 1) {
+                        rowClass = "silver";
+                    } else if (index === 2) {
+                        rowClass = "bronze";
+                    }
+                    else rowClass ="";
+
+                    // Créez une nouvelle ligne avec la classe correspondante
+                    var newRow = $("<tr class='" + rowClass + "'><td>" + item.Nom_de_l_Association + "</td><td>" + item.Nombre_de_Shots + "</td></tr>");
+
+                    // Ajoutez la ligne au tableau
+                    $("#data-table1 tbody").append(newRow);
+                }
+                // Check if the index is less than 21 for the second table
+                // Check if the index is greater than or equal to 10 and less than 21 for the second table
+                if (index >= 11 && index < 21) {
+                    $("#data-table2 tbody").append(
+                        "<tr><td>" + item.Nom_de_l_Association + "</td><td>" + item.Nombre_de_Shots + "</td></tr>"
+                    );
+                }
+            });
+        });
+    }
+
+    // Refresh the data every X seconds
+    refreshData(); // Initial update
+    setInterval(refreshData, 1000); // For example, every 5 seconds
+</script>
+</body>
+</html>
